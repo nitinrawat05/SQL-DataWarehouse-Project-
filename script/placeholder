@@ -12,7 +12,7 @@
 USE master;  
 GO  
 
--- Drop the DataWarehouse database if it already exists (optional)  
+-- Drop the DataWarehouse database if it already exists 
 IF EXISTS (SELECT name FROM sys.databases WHERE name = 'DataWarehouse')  
 BEGIN  
     DROP DATABASE DataWarehouse;  
