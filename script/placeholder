@@ -1,1 +1,24 @@
 
+-- Switch to the master database  
+USE master;  
+GO  
+
+-- Create a new database named DataWarehouse  
+CREATE DATABASE DataWarehouse;  
+GO  
+
+-- Switch to the newly created DataWarehouse database  
+USE DataWarehouse;  
+GO  
+
+-- Create the Bronze schema (Raw data layer)  
+CREATE SCHEMA bronze;  
+GO  
+
+-- Create the Silver schema (Cleansed and transformed data layer)  
+CREATE SCHEMA silver;  
+GO  
+
+-- Create the Gold schema (Aggregated and curated data layer)  
+CREATE SCHEMA gold;  
+GO  
