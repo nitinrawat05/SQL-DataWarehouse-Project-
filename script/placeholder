@@ -1,3 +1,13 @@
+-- =========================================
+-- Author: Nits
+-- Purpose: 
+--   This script sets up a data warehouse in SQL Server
+--   following the Bronze-Silver-Gold architecture.
+--   It ensures that the database and schemas exist 
+--   before creating them to avoid execution errors.
+-- =========================================
+
+
 -- Switch to the master database  
 USE master;  
 GO  
