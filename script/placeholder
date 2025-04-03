@@ -1,24 +1,42 @@
-
 -- Switch to the master database  
 USE master;  
 GO  
 
--- Create a new database named DataWarehouse  
-CREATE DATABASE DataWarehouse;  
+-- Drop the DataWarehouse database if it already exists (optional)  
+IF EXISTS (SELECT name FROM sys.databases WHERE name = 'DataWarehouse')  
+BEGIN  
+    DROP DATABASE DataWarehouse;  
+END  
+GO  
+
+-- Create the DataWarehouse database if it doesn’t already exist  
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'DataWarehouse')  
+BEGIN  
+    CREATE DATABASE DataWarehouse;  
+END  
 GO  
 
 -- Switch to the newly created DataWarehouse database  
 USE DataWarehouse;  
 GO  
 
--- Create the Bronze schema (Raw data layer)  
-CREATE SCHEMA bronze;  
+-- Create the Bronze schema (Raw data layer) if it doesn’t exist  
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'bronze')  
+BEGIN  
+    EXEC('CREATE SCHEMA bronze');  
+END  
 GO  
 
--- Create the Silver schema (Cleansed and transformed data layer)  
-CREATE SCHEMA silver;  
+-- Create the Silver schema (Cleansed and transformed data layer) if it doesn’t exist  
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'silver')  
+BEGIN  
+    EXEC('CREATE SCHEMA silver');  
+END  
 GO  
 
--- Create the Gold schema (Aggregated and curated data layer)  
-CREATE SCHEMA gold;  
+-- Create the Gold schema (Aggregated and curated data layer) if it doesn’t exist  
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'gold')  
+BEGIN  
+    EXEC('CREATE SCHEMA gold');  
+END  
 GO  
