@@ -1,0 +1,34 @@
+-- ==============================================================================
+-- 🧹 Data Audit & Standardization: ERP Product Category Mapping
+-- 🔍 Step 1: Identify Inconsistent or Unclean Entries
+-- ==============================================================================
+
+-- 🎯 Check for leading/trailing spaces in category-related fields
+SELECT * 
+FROM bronze.erp_px_cat_g1v2
+WHERE 
+    cat       != TRIM(cat) OR 
+    subcat    != TRIM(subcat) OR 
+    maintance != TRIM(maintance);
+
+-- 📋 Review distinct values in 'maintance' column for consistency
+SELECT DISTINCT
+    maintance
+FROM bronze.erp_px_cat_g1v2;
+
+-- ==============================================================================
+-- 🚀 Final Data Load: Clean Product Category Data into Silver Layer
+-- ==============================================================================
+
+-- Preview raw data (Optional: used for comparison or QA)
+SELECT * 
+FROM bronze.erp_px_cat_g1v2;
+
+-- ⬇️ Insert cleaned & standardized data into silver layer
+INSERT INTO silver.erp_px_cat_g1v2 (id, cat, subcat, maintance)
+SELECT 
+    id,
+    TRIM(cat)       AS cat,
+    TRIM(subcat)    AS subcat,
+    TRIM(maintance) AS maintance
+FROM bronze.erp_px_cat_g1v2;
