@@ -1,5 +1,15 @@
+-- =============================================
+-- View: gold.dim_customer
+-- Purpose: Create a dimensional customer table 
+--          by combining CRM and ERP data sources.
+-- Description:
+--   - Generates a unique customer_key using ROW_NUMBER.
+--   - Includes key customer attributes such as name,
+--     gender, marital status, country, and birthdate.
+--   - Handles missing gender values with a fallback.
+-- =============================================
 
-CREATE VIEW gold.dim_customer as
+CREATE VIEW gold.dim_customer AS
 SELECT
     ROW_NUMBER() OVER (ORDER BY ci.cst_id) AS customer_key,
     ci.cst_id AS customer_id,
@@ -17,6 +27,8 @@ SELECT
 FROM 
     silver.crm_cust_info ci
 LEFT JOIN 
-    silver.erp_cust_az12 ca ON ci.cst_key = ca.cid
+    silver.erp_cust_az12 ca 
+    ON ci.cst_key = ca.cid
 LEFT JOIN 
-    silver.erp_loc_a101 la ON ci.cst_key = la.cid;
+    silver.erp_loc_a101 la 
+    ON ci.cst_key = la.cid;
