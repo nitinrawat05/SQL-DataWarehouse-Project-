@@ -1,0 +1,52 @@
+/*
+========================================================================
+📝 View: gold.dim_products
+========================================================================
+
+📌 What this SQL script does:
+
+- Creates a **dimension view** (`gold.dim_products`) for products using data from the silver layer.
+- Assigns a **surrogate key** using `ROW_NUMBER()` to uniquely identify each product.
+- Joins **CRM product info** (`crm_prd_info`) with **ERP category metadata** (`erp_px_cat_g1v2`) to enrich each product with category and subcategory information.
+- Filters out **inactive or historical products** by excluding records where `prd_end_dt` is not null.
+- Selects important product attributes such as:
+  - Product ID, Name, Number
+  - Category ID, Category, Subcategory
+  - Cost, Product Line, Start Date
+- Supports **analytics/reporting** by consolidating and cleaning product data into a consumable gold layer.
+
+========================================================================
+*/
+
+-- Create a dimension view for active products with enriched category details
+CREATE VIEW gold.dim_products AS
+SELECT
+    -- Unique surrogate key for each product
+    ROW_NUMBER() OVER (ORDER BY pn.prd_start_dt, pn.prd_key) AS product_key,
+    
+    -- Product identifiers and attributes
+    pn.prd_id AS product_id,
+    pn.prd_key AS product_number,
+    pn.prd_nm AS product_name,
+    
+    -- Category details
+    pn.cat_id AS category_id,
+    pc.cat AS category,
+    pc.subcat AS subcategory,
+    pc.maintenance,
+    
+    -- Product cost and metadata
+    pn.prd_cost AS cost,
+    pn.prd_line AS product_line,
+    pn.prd_start_dt AS start_date
+
+FROM silver.crm_prd_info pn
+LEFT JOIN silver.erp_px_cat_g1v2 pc
+    ON pn.cat_id = pc.id
+
+-- Filter to include only active (non-historical) products
+WHERE prd_end_dt IS NULL;
+
+
+-- Preview the newly created dimension view
+SELECT * FROM gold.dim_products;
